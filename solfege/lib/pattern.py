@@ -7,7 +7,7 @@ from mido.midifiles.tracks import MidiTrack
 MIDDLE_C = 60
 NOTE_ON = "note_on"
 NOTE_OFF = "note_off"
-TIME_DELTA = 400
+TIME_DELTA = 500
 ACOUSTIC_BASS = 32
 OCTAVE = 12
 MAX_VELOCITY = 127
@@ -30,15 +30,6 @@ NOTE_NAMES = ['c', 'c#/db', 'd', 'd#/eb', 'e',
 def note_name(midi_note: int):
     note_names = {(60+i): name for i, name in enumerate(NOTE_NAMES)}
     return note_names[MIDDLE_C + (midi_note - MIDDLE_C) % len(NOTE_NAMES)]
-
-
-class Note:
-    def __init__(self, name: str) -> None:
-        self._name = name
-
-    def add(self, interval: int):
-        if self._name == "c":
-            self._name = "d"
 
 
 class Pattern:
@@ -131,7 +122,3 @@ def note_for_step(scale: Scale, root: int, step: int) -> int:
         step_note += scale._intervals[i % len(scale)]
     print(f'scale: {scale} root: {root} step: {step} step_note: {step_note}')
     return step_note
-
-
-if __name__ == "__main__":
-    main()
