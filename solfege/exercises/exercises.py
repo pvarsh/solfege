@@ -94,8 +94,6 @@ THREE_NOTES_DESCENDING = Pattern(
         5, 4, 3,
         4, 3, 2,
         3, 2, 1,
-        2, 1, 0,
-        1, 0, -1,
     ],
     'Three notes descending'
 )
