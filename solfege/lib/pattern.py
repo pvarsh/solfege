@@ -8,6 +8,7 @@ MIDDLE_C = 60
 NOTE_ON = "note_on"
 NOTE_OFF = "note_off"
 TIME_DELTA = 500
+PIANO = 0
 ACOUSTIC_BASS = 32
 OCTAVE = 12
 MAX_VELOCITY = 127
@@ -67,7 +68,7 @@ def make_scale_file(scale: Scale, root: int):
         messages.append(msg_off)
 
     filename = '{}_{}.mid'.format(note_name(root), scale._name)
-    make_file(messages, filename)
+    make_file(messages, filename, PIANO)
 
 
 def make_pattern_notes(scale: Scale, pattern: Pattern, root: int) -> list[int]:
@@ -85,11 +86,11 @@ def make_messages(notes: Sequence[int], time_delta: int):
     return messages
 
 
-def make_file(messages: Sequence[Message], filename: str) -> None:
+def make_file(messages: Sequence[Message], filename: str, instrument: int) -> None:
     mid = MidiFile()
     track = MidiTrack()
     mid.tracks.append(track)
-    track.append(Message('program_change', program=ACOUSTIC_BASS, time=0))
+    track.append(Message('program_change', program=instrument, time=0))
     for msg in messages:
         track.append(msg)
     mid.save(filename)
