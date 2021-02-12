@@ -24,8 +24,8 @@ MODES_OF_MAJOR = {
     7: 'locrian',
 }
 
-NOTE_NAMES = ['c', 'c#/db', 'd', 'd#/eb', 'e',
-              'f', 'f#/gb', 'g', 'g#/ab', 'a', 'a#/bb', 'b']
+NOTE_NAMES = ['c', 'c#-db', 'd', 'd#-eb', 'e',
+              'f', 'f#-gb', 'g', 'g#-ab', 'a', 'a#-bb', 'b']
 
 
 def note_name(midi_note: int):
@@ -80,7 +80,6 @@ def make_pattern_notes(scale: Scale, pattern: Pattern, root: int) -> list[int]:
 def make_messages(notes: Sequence[int], time_delta: int):
     messages = list[Message]()
     for note in notes:
-        print(f"Note: {note}")
         messages.append(Message(type=NOTE_ON, velocity=MAX_VELOCITY-10, note=note, time=time_delta))
         messages.append(Message(type=NOTE_OFF, velocity=MAX_VELOCITY-100, note=note, time=time_delta))
     return messages
@@ -99,7 +98,6 @@ def make_file(messages: Sequence[Message], filename: str, instrument: int) -> No
 def _make_extended_scale(scale, pattern, root) -> Sequence[int]:
     pattern_max = max(pattern._steps)
     extended_scale = [root]
-    print(f'root {root}')
     for i in range(pattern_max - 1):
         next_step = extended_scale[i] + scale._intervals[i % len(scale)]
         extended_scale.append(next_step)
@@ -121,5 +119,4 @@ def note_for_step(scale: Scale, root: int, step: int) -> int:
     step_note = root
     for i in range(step_index):
         step_note += scale._intervals[i % len(scale)]
-    print(f'scale: {scale} root: {root} step: {step} step_note: {step_note}')
     return step_note
