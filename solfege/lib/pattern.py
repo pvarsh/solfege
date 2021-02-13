@@ -72,8 +72,9 @@ def make_scale_file(scale: Scale, root: int):
 
 
 def make_pattern_notes(scale: Scale, pattern: Pattern, root: int) -> list[int]:
-    extended_scale = _make_extended_scale(scale, pattern, root)
-    pattern_notes = [extended_scale[step-1] for step in pattern._steps]
+    # extended_scale = _make_extended_scale(scale, pattern, root)
+    scale_notes = make_scale_notes(scale, pattern, root)
+    pattern_notes = [scale_notes[step] for step in pattern._steps]
     return pattern_notes
 
 
@@ -103,6 +104,20 @@ def _make_extended_scale(scale, pattern, root) -> Sequence[int]:
         extended_scale.append(next_step)
     return extended_scale
 
+def make_scale_notes(scale: Scale, pattern: Pattern, root) -> dict[int, int]:
+    scale_notes = dict[int, int]()
+    min_step = min(pattern._steps)
+    max_step = max(pattern._steps)
+    scale_notes[0] = root
+    note = root
+    for i in range(-1, min_step - 1, -1):
+        note = note - scale._intervals[i % len(scale)]
+        scale_notes[i] = note
+    note = root
+    for i in range(1, max_step + 1):
+        note = note + scale._intervals[(i-1) % len(scale)]
+        scale_notes[i] = note
+    return scale_notes
 
 def make_mode(scale: Scale, step: int, name="") -> Scale:
     name = name or f'{scale._name}-{step}-mode'
