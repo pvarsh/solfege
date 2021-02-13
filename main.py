@@ -34,7 +34,7 @@ def make_tune_in_patterns(instrument, root):
 
         # other patterns
         for track_number, p in enumerate(MODE_WORKOUT, 1):
-            # if s._name.lower() != 'phrygian':
+            # if s._name.lower() != IONIAN._name.lower():
             #     continue
             # if p._name != DOWN_TO_ROOT._name:
             #     continue
