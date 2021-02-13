@@ -128,7 +128,6 @@ def make_mode(scale: Scale, step: int, name="") -> Scale:
     return Scale(mode_intervals, name=name)
 
 
-
 def note_for_step(scale: Scale, root: int, step: int) -> int:
     step_index = step - 1
     step_note = root
