@@ -21,14 +21,16 @@ DESCENDING = Pattern(
 )
 
 DOWN_TO_ROOT = Pattern(
-    [0,
-    1, 0,
-    2, 1 ,0,
-    3, 2, 1, 0,
-    4, 3, 2, 1, 0,
-    5, 4, 3, 2, 1, 0,
-    6, 5, 4, 3, 2, 1, 0,
-    7, 6, 5, 4, 3, 2, 1, 0],
+    [
+        0,
+        1, 0,
+        2, 1, 0,
+        3, 2, 1, 0,
+        4, 3, 2, 1, 0,
+        5, 4, 3, 2, 1, 0,
+        6, 5, 4, 3, 2, 1, 0,
+        7, 6, 5, 4, 3, 2, 1, 0,
+    ],
     'Down to root from every step'
 )
 
@@ -37,7 +39,7 @@ UP_TO_ROOT = Pattern(
         7,
         6, 7,
         5, 6, 7,
-        4, 5, 6,7 ,
+        4, 5, 6, 7,
         3, 4, 5, 6, 7,
         2, 3, 4, 5, 6, 7,
         1, 2, 3, 4, 5, 6, 7,
@@ -54,8 +56,22 @@ THREE_NOTES_ASCENDING = Pattern(
         3, 4, 5,
         4, 5, 6,
         5, 6, 7,
+        6, 7, 8, 7,
     ],
     'Three notes ascending'
+)
+
+THREE_NOTES_DESCENDING = Pattern(
+    [
+        7, 6, 5,
+        6, 5, 4,
+        5, 4, 3,
+        4, 3, 2,
+        3, 2, 1,
+        2, 1, 0,
+        1, 0, -1, 0,
+    ],
+    'Three notes descending'
 )
 
 THREE_DESCENDING_NOTES_ASCENDING = Pattern(
@@ -80,31 +96,18 @@ THREE_ASCENDING_NOTES_DESCENDING = Pattern(
         4, 5, 6,
         3, 4, 5,
         2, 3, 4,
-        1, 2, 3,
-        0, 1, 2,
+        1, 2, 3, 0,
     ],
     "Three ascending notes descending"
 )
 
-THREE_NOTES_DESCENDING = Pattern(
-    [
-        7, 6, 5,
-        6, 5, 4,
-        5, 4, 3,
-        4, 3, 2,
-        3, 2, 1,
-        2, 1, 0,
-    ],
-    'Three notes descending'
-)
-
 ASCENDING_THIRDS_ASCENDING = Pattern(
-    [0, 2, 1, 3, 2, 4, 3, 5, 4, 6, 5, 7],
+    [0, 2, 1, 3, 2, 4, 3, 5, 4, 6, 5, 7, 6, 8, 7],
     'Ascending triads ascending'
 )
 
-DESCENDING_THIRDS_DESCENDING= Pattern(
-    [7, 5, 6, 4, 5, 3, 4, 2, 3, 1, 2, 0],
+DESCENDING_THIRDS_DESCENDING = Pattern(
+    [7, 5, 6, 4, 5, 3, 4, 2, 3, 1, 2, 0, 1, -1, 0],
     'Descending triads descending'
 )
 
@@ -116,8 +119,7 @@ ASCENDING_TRIADS_ASCENDING = Pattern(
         3, 5, 7,
         4, 6, 8,
         5, 7, 9,
-        6, 8, 10,
-        7, 9, 11,
+        6, 8, 10, 7,
     ],
     'Ascending triads ascending'
 )
@@ -128,8 +130,38 @@ DESCENDING_TRIADS_DESCENDING = Pattern(
         6, 4, 2,
         5, 3, 1,
         4, 2, 0,
+        3, 1, -1,
+        2, 0, -2,
+        1, -1, -3, 0 # ending on steps 5, 1 from below
     ],
     'Descending triads descending'
+)
+
+DESCENDING_TRIADS_ASCENDING = Pattern(
+    [
+        4, 2, 0,
+        5, 3, 1,
+        6, 4, 2,
+        7, 5, 3,
+        8, 6, 4,
+        9, 7, 5,
+        10, 8, 6, 7
+    ],
+    'Descending triads ascending'
+)
+
+ASCENDING_TRIADS_DESCENDING = Pattern(
+    [
+        7, 9, 11,
+        6, 8, 10,
+        5, 7, 9,
+        4, 6, 8,
+        3, 5, 7,
+        2, 4, 6,
+        1, 3, 5, 0
+    ],
+    'Ascending triads descending'
+
 )
 
 MODE_WORKOUT = [
@@ -146,4 +178,6 @@ MODE_WORKOUT = [
     DESCENDING_THIRDS_DESCENDING,
     ASCENDING_TRIADS_ASCENDING,
     DESCENDING_TRIADS_DESCENDING,
-    ]
+    DESCENDING_TRIADS_ASCENDING,
+    ASCENDING_TRIADS_DESCENDING,
+]
