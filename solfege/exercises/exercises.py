@@ -1,5 +1,10 @@
 from solfege.lib.pattern import Pattern
 
+
+def flatten(l):
+    return [i for sublist in l for i in sublist]
+
+
 TUNE_IN_PATTERN = Pattern(
     [
         0, 2, 4, 2, 0,
@@ -20,6 +25,14 @@ DESCENDING = Pattern(
     'Descending'
 )
 
+
+def descending(length: int) -> Pattern:
+    return Pattern(
+        list(range(length, -1, -1)),
+        'Descending'
+    )
+
+
 DOWN_TO_ROOT = Pattern(
     [
         0,
@@ -33,6 +46,14 @@ DOWN_TO_ROOT = Pattern(
     ],
     'Down to root from every step'
 )
+
+
+def down_to_root(length: int) -> Pattern:
+    return Pattern(
+        flatten([list(range(s, -1, -1)) for s in range(length+1)]),
+        'Down to root from every step'
+    )
+
 
 UP_TO_ROOT = Pattern(
     [
@@ -48,6 +69,14 @@ UP_TO_ROOT = Pattern(
     'Up to root from every step'
 )
 
+
+def up_to_root(length: int) -> Pattern:
+    return Pattern(
+        flatten([list(range(s, length+1)) for s in range(length, -1, -1)]),
+        'Up to root from every step'
+    )
+
+
 THREE_NOTES_ASCENDING = Pattern(
     [
         0, 1, 2,
@@ -60,6 +89,14 @@ THREE_NOTES_ASCENDING = Pattern(
     ],
     'Three notes ascending'
 )
+
+
+def three_notes_ascending(length: int) -> Pattern:
+    return Pattern(
+        flatten([s, s+1, s+2] for s in range(length)) + [length],
+        'Three notes ascending'
+    )
+
 
 THREE_NOTES_DESCENDING = Pattern(
     [
@@ -74,6 +111,14 @@ THREE_NOTES_DESCENDING = Pattern(
     'Three notes descending'
 )
 
+
+def three_notes_descending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s, s-1, s-2] for s in range(length, 0, -1)]) + [0],
+        'Three notes descending'
+    )
+
+
 THREE_DESCENDING_NOTES_ASCENDING = Pattern(
     [
         2, 1, 0,
@@ -82,11 +127,18 @@ THREE_DESCENDING_NOTES_ASCENDING = Pattern(
         5, 4, 3,
         6, 5, 4,
         7, 6, 5,
-        8, 7, 6,
-        9, 8, 7,
+        8, 7, 6, 7,
     ],
     "Three descending notes ascending"
 )
+
+
+def three_descending_notes_ascending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s + 2, s + 1, s] for s in range(length)]) + [length],
+        "Three descending notes ascending"
+    )
+
 
 THREE_ASCENDING_NOTES_DESCENDING = Pattern(
     [
@@ -101,15 +153,39 @@ THREE_ASCENDING_NOTES_DESCENDING = Pattern(
     "Three ascending notes descending"
 )
 
+
+def three_ascending_notes_descending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s, s + 1, s + 2] for s in range(length, 0, -1)]) + [0],
+        "Three ascending notes descending"
+    )
+
+
 ASCENDING_THIRDS_ASCENDING = Pattern(
     [0, 2, 1, 3, 2, 4, 3, 5, 4, 6, 5, 7, 6, 8, 7],
-    'Ascending triads ascending'
+    'Ascending thirds ascending'
 )
+
+
+def ascending_thirds_ascending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s, s + 2] for s in range(length)]) + [length],
+        'Ascending thirds ascending'
+    )
+
 
 DESCENDING_THIRDS_DESCENDING = Pattern(
     [7, 5, 6, 4, 5, 3, 4, 2, 3, 1, 2, 0, 1, -1, 0],
-    'Descending triads descending'
+    'Descending thirds descending'
 )
+
+
+def descending_thirds_descending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s, s - 2] for s in range(length, 0, -1)]) + [0],
+        'Descending thirds descending'
+    )
+
 
 ASCENDING_TRIADS_ASCENDING = Pattern(
     [
@@ -124,6 +200,14 @@ ASCENDING_TRIADS_ASCENDING = Pattern(
     'Ascending triads ascending'
 )
 
+
+def ascending_triads_ascending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s, s + 2, s + 4] for s in range(length)]) + [length],
+        'Ascending triads ascending'
+    )
+
+
 DESCENDING_TRIADS_DESCENDING = Pattern(
     [
         7, 5, 3,
@@ -132,10 +216,18 @@ DESCENDING_TRIADS_DESCENDING = Pattern(
         4, 2, 0,
         3, 1, -1,
         2, 0, -2,
-        1, -1, -3, 0 # ending on steps 5, 1 from below
+        1, -1, -3, 0  # ending on steps 5, 1 from below
     ],
     'Descending triads descending'
 )
+
+
+def descending_triads_descending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s, s - 2, s - 4] for s in range(length, 0, -1)]) + [0],
+        'Descending triads descending'
+    )
+
 
 DESCENDING_TRIADS_ASCENDING = Pattern(
     [
@@ -150,6 +242,14 @@ DESCENDING_TRIADS_ASCENDING = Pattern(
     'Descending triads ascending'
 )
 
+
+def descending_triads_ascending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s + 4, s + 2, s] for s in range(length)]) + [length],
+        'Descending triads ascending'
+    )
+
+
 ASCENDING_TRIADS_DESCENDING = Pattern(
     [
         7, 9, 11,
@@ -161,8 +261,36 @@ ASCENDING_TRIADS_DESCENDING = Pattern(
         1, 3, 5, 0
     ],
     'Ascending triads descending'
-
 )
+
+
+def ascending_triads_descending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s, s + 2, s + 4] for s in range(length, 0, -1)]) + [0],
+        'Ascending triads descending'
+    )
+
+
+def mode_workout(mode_length: int) -> list[Pattern]:
+    return [
+        p(mode_length) for p in [
+            ascending,
+            descending,
+            down_to_root,
+            up_to_root,
+            three_notes_ascending,
+            three_notes_descending,
+            three_descending_notes_ascending,
+            three_ascending_notes_descending,
+            ascending_thirds_ascending,
+            descending_thirds_descending,
+            ascending_triads_ascending,
+            descending_triads_descending,
+            descending_triads_ascending,
+            ascending_triads_descending,
+        ]
+    ]
+
 
 MODE_WORKOUT = [
     TUNE_IN_PATTERN,
