@@ -5,7 +5,7 @@ from collections import namedtuple
 import eyed3
 
 from solfege.lib.pattern import *
-from solfege.exercises.scales import IONIAN, modes_of_major, modes_of_minor
+from solfege.exercises.scales import BLUES, IONIAN, modes_of_major, modes_of_minor
 from solfege.exercises.exercises import ASCENDING_THIRDS_ASCENDING, DOWN_TO_ROOT, MODE_WORKOUT, TUNE_IN_PATTERN
 
 ARTIST_NAME = 'Peter Varshavsky'
@@ -21,6 +21,35 @@ def makedirs_if_not_exists(path: str):
     except FileExistsError:
         pass
 
+
+def make_blues_scale_drills(instrument, root):
+    workout_without_tune_in_pattern = MODE_WORKOUT[1:]
+    scale = BLUES
+    for track_number, pattern in enumerate(workout_without_tune_in_pattern, 1):
+        pattern_notes = make_pattern_notes(scale, pattern, root)
+        messages=make_messages(pattern_notes, TIME_DELTA)
+        temp_dirname = os.path.join(
+            'output', f'{scale._name}-drill')
+        mp3_dirname = os.path.join(
+            'output', 'mp3', f'{scale._name}-drill-{instrument.name}')
+        makedirs_if_not_exists(temp_dirname)
+        makedirs_if_not_exists(mp3_dirname)
+        filename = f'{pattern._name}-{note_name(root)}-{scale._name}-{instrument.name}'
+        mid_filepath = os.path.join(temp_dirname, f'{filename}.mid')
+        wav_filepath = os.path.join(temp_dirname, f'{filename}.wav')
+        mp3_filepath = os.path.join(mp3_dirname, f'{filename}.mp3')
+        make_file(messages, mid_filepath, instrument.midi_number)
+        subprocess.run(['timidity', mid_filepath, '-Ow', '-o', wav_filepath])
+        subprocess.run(['ffmpeg', '-y', '-i', wav_filepath,
+                        mp3_filepath], capture_output=True, check=True)
+        album_name = f'{scale._name} - drill - {instrument.name}'
+        metadata = TrackMetadata(
+            album=album_name,
+            title=filename,
+            artist=ARTIST_NAME,
+            number=track_number,
+        )
+        update_id3_tags(mp3_filepath, metadata)
 
 def make_tune_in_patterns(instrument, root, modes, modes_name):
     for i, s in enumerate(modes):
@@ -131,9 +160,10 @@ def main():
     # make_drills(bass, bass_root)
     # make_drills(piano, piano_root)
 
-    make_tune_in_patterns(piano, piano_root, modes_of_major, 'modes-of-major')
-    make_tune_in_patterns(piano, piano_root-3,
-                          modes_of_minor, 'modes-of-minor')
+    # make_tune_in_patterns(piano, piano_root, modes_of_major, 'modes-of-major')
+    # make_tune_in_patterns(piano, piano_root-3,
+    #                       modes_of_minor, 'modes-of-minor')
+    make_blues_scale_drills(piano, piano_root)
 
 
 if __name__ == '__main__':
