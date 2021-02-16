@@ -6,6 +6,10 @@ IONIAN = Scale(
         "ionian",
     )
 
+def test_scale_mode():
+    assert IONIAN.mode(1, 'dorian')._intervals == [2, 1, 2, 2, 2, 1, 2]
+    assert IONIAN.mode(1, 'dorian')._name == 'dorian'
+
 # def test_make_pattern_notes():
 #     UP_TO_ROOT = Pattern(
 #         [

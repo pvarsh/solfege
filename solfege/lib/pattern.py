@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections.abc import Sequence
 
 from mido import Message
@@ -47,10 +48,8 @@ class Scale:
     def __len__(self):
         return len(self._intervals)
 
-    def mode(self, step: int, name: str):
-        intervals = [self._intervals[(step + i) % len(self._intervals)]
-                     for i in range(len(self._intervals))]
-        return intervals
+    def mode(self, step: int, name: str) -> Scale:
+        return Scale(self._intervals[step:] + self._intervals[:step], name)
 
 
 def make_scale_file(scale: Scale, root: int):
@@ -129,8 +128,8 @@ def make_mode(scale: Scale, step: int, name="") -> Scale:
 
 
 def note_for_step(scale: Scale, root: int, step: int) -> int:
-    step_index = step - 1
     step_note = root
-    for i in range(step_index):
-        step_note += scale._intervals[i % len(scale)]
+    for i in range(step):
+        index = i % len(scale)
+        step_note += scale._intervals[index]
     return step_note

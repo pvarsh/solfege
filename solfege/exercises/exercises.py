@@ -13,7 +13,15 @@ TUNE_IN_PATTERN = Pattern(
         0, 2, 4, 7,
         0, 2, 4, 6,
     ],
-    'Tune-in')
+    'Tune-in-1')
+
+
+def ascending(length: int) -> Pattern:
+    return Pattern(
+        list(range(length + 1)),
+        'Ascending'
+    )
+
 
 ASCENDING = Pattern(
     [0, 1, 2, 3, 4, 5, 6, 7],
