@@ -8,7 +8,12 @@ from solfege.lib.pattern import *
 from solfege.exercises.scales import IONIAN, modes_of_major, modes_of_minor
 from solfege.exercises.exercises import ASCENDING_THIRDS_ASCENDING, DOWN_TO_ROOT, MODE_WORKOUT, TUNE_IN_PATTERN
 
+ARTIST_NAME = 'Peter Varshavsky'
+
 instrument = namedtuple('instrument', ['name', 'midi_number'])
+TrackMetadata = namedtuple(
+    'track_metadata', ['album', 'title', 'artist', 'number'])
+
 
 def makedirs_if_not_exists(path: str):
     try:
@@ -18,17 +23,16 @@ def makedirs_if_not_exists(path: str):
 
 
 def make_tune_in_patterns(instrument, root, modes, modes_name):
-    print('FOO', modes_name, root)
     for i, s in enumerate(modes):
         mode_root = note_for_step(modes[0], root, i)
-        print('MODE_ROOT', mode_root)
         while mode_root < UPRIGHT_BASS_LOWEST:
             mode_root += OCTAVE
         pattern_notes = make_pattern_notes(s, TUNE_IN_PATTERN, mode_root)
-        print(i, s._name, TUNE_IN_PATTERN._name, pattern_notes, note_name(mode_root))
         messages = make_messages(pattern_notes, TIME_DELTA)
-        temp_dirname = os.path.join('output', f'{TUNE_IN_PATTERN._name}-{modes_name}')
-        mp3_dirname = os.path.join('output', 'mp3', f'{TUNE_IN_PATTERN._name}-{modes_name}-{instrument.name}')
+        temp_dirname = os.path.join(
+            'output', f'{TUNE_IN_PATTERN._name}-{modes_name}')
+        mp3_dirname = os.path.join(
+            'output', 'mp3', f'{TUNE_IN_PATTERN._name}-{modes_name}-{instrument.name}')
         makedirs_if_not_exists(temp_dirname)
         makedirs_if_not_exists(mp3_dirname)
         filename = f'{TUNE_IN_PATTERN._name}-{note_name(mode_root)}-{s._name}-{instrument.name}'
@@ -40,13 +44,14 @@ def make_tune_in_patterns(instrument, root, modes, modes_name):
         subprocess.run(['timidity', mid_filepath, '-Ow', '-o', wav_filepath])
         subprocess.run(['ffmpeg', '-y', '-i', wav_filepath,
                         mp3_filepath], capture_output=True, check=True)
-        f = eyed3.load(mp3_filepath)
         album_name = f'Tune-in pattern 1 - {modes_name} - {instrument.name}'
-        f.tag.album = album_name
-        f.tag.title = filename
-        f.tag.artist = 'Peter Varshavsky'
-        f.tag.track_num = i + 1
-        f.tag.save()
+        metadata = TrackMetadata(
+            album=album_name,
+            title=filename,
+            artist=ARTIST_NAME,
+            number=i+1,
+        )
+        update_id3_tags(mp3_filepath, metadata)
 
 
 def make_drills(instrument, root):
@@ -84,7 +89,7 @@ def make_drills(instrument, root):
             album_dir = f'{s._name}-{instrument.name}'
             temp_dirname = os.path.join(output_dir, album_dir)
             mp3_dirname = os.path.join(output_dir, 'mp3', album_dir)
-            try: 
+            try:
                 os.makedirs(mp3_dirname)
                 os.makedirs(temp_dirname)
             except FileExistsError:
@@ -97,13 +102,23 @@ def make_drills(instrument, root):
                             wav_filepath], capture_output=True, check=True)
             subprocess.run(['ffmpeg', '-y', '-i', wav_filepath,
                             mp3_filepath], capture_output=True, check=True)
-            f = eyed3.load(mp3_filepath)
             album_name = f'{s._name.capitalize()} drill in {note_name(mode_root).capitalize()} - {instrument.name}'
-            f.tag.album = album_name
-            f.tag.title = filename
-            f.tag.artist = 'Peter Varshavsky'
-            f.tag.track_num = track_number
-            f.tag.save()
+            metadata = TrackMetadata(
+                album=album_name,
+                title=filename,
+                artist=ARTIST_NAME,
+                number=track_number,
+            )
+            update_id3_tags(mp3_filepath, metadata)
+
+
+def update_id3_tags(filepath: str, metadata: TrackMetadata):
+    f = eyed3.load(filepath)
+    f.tag.album = metadata.album
+    f.tag.title = metadata.title
+    f.tag.artist = 'Peter Varshavsky'
+    f.tag.track_num = metadata.number
+    f.tag.save()
 
 
 def main():
@@ -117,7 +132,8 @@ def main():
     # make_drills(piano, piano_root)
 
     make_tune_in_patterns(piano, piano_root, modes_of_major, 'modes-of-major')
-    make_tune_in_patterns(piano, piano_root, modes_of_minor, 'modes-of-minor')
+    make_tune_in_patterns(piano, piano_root-3,
+                          modes_of_minor, 'modes-of-minor')
 
 
 if __name__ == '__main__':
