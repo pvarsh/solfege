@@ -1,3 +1,4 @@
+from solfege.exercises.scales import BLUES
 from solfege.lib.pattern import Pattern
 
 
@@ -272,11 +273,54 @@ ASCENDING_TRIADS_DESCENDING = Pattern(
 )
 
 
+def ascending_triads_first_inversion_ascending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s+2, s+4, s+7] for s in range(length)]) + [length],
+        'Ascending triads in first inversion ascending'
+    )
+
+
+def ascending_triads_second_inversion_ascending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s-5, s, s+2] for s in range(length)]) + [length],
+        'Ascending triads in second inversion ascending'
+    )
+
+
+def descending_triads_first_inversion_descending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s, s - 3, s - 5] for s in range(length, 0, -1)]) + [0],
+        'Descending triads in first inversion descending'
+    )
+
+
+def descending_triads_second_inversion_descending(length: int) -> Pattern:
+    return Pattern(
+        flatten([[s - 3, s, s+2] for s in range(length, 0, -1)]) + [0],
+        'Descending triads in second inversion descending'
+    )
+
+
 def ascending_triads_descending(length: int) -> Pattern:
     return Pattern(
         flatten([[s, s + 2, s + 4] for s in range(length, 0, -1)]) + [0],
         'Ascending triads descending'
     )
+
+
+def blues_workout_1() -> list[Pattern]:
+    return [
+        p(len(BLUES)) for p in [
+            ascending,
+            descending,
+            down_to_root,
+            up_to_root,
+            three_notes_ascending,
+            three_notes_descending,
+            three_descending_notes_ascending,
+            three_ascending_notes_descending,
+        ]
+    ]
 
 
 def mode_workout(mode_length: int) -> list[Pattern]:
@@ -296,6 +340,21 @@ def mode_workout(mode_length: int) -> list[Pattern]:
             descending_triads_descending,
             descending_triads_ascending,
             ascending_triads_descending,
+        ]
+    ]
+
+
+def arpeggio_workout(mode_length: int) -> list[Pattern]:
+    return [
+        p(mode_length) for p in [
+            ascending_triads_ascending,
+            descending_triads_descending,
+            ascending_triads_descending,
+            descending_triads_ascending,
+            ascending_triads_first_inversion_ascending,
+            descending_triads_first_inversion_descending,
+            ascending_triads_second_inversion_ascending,
+            descending_triads_second_inversion_descending,
         ]
     ]
 

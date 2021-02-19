@@ -5,8 +5,8 @@ from collections import namedtuple
 import eyed3
 
 from solfege.lib.pattern import *
-from solfege.exercises.scales import BLUES, IONIAN, modes_of_major, modes_of_minor
-from solfege.exercises.exercises import ASCENDING_THIRDS_ASCENDING, DOWN_TO_ROOT, MODE_WORKOUT, TUNE_IN_PATTERN
+from solfege.exercises.scales import BLUES, ionian, aeolian, modes_of_major, modes_of_minor
+from solfege.exercises.exercises import ASCENDING_THIRDS_ASCENDING, DOWN_TO_ROOT, MODE_WORKOUT, TUNE_IN_PATTERN, arpeggio_workout, blues_workout_1, mode_workout
 
 ARTIST_NAME = 'Peter Varshavsky'
 
@@ -23,11 +23,11 @@ def makedirs_if_not_exists(path: str):
 
 
 def make_blues_scale_drills(instrument, root):
-    workout_without_tune_in_pattern = MODE_WORKOUT[1:]
     scale = BLUES
+    workout_without_tune_in_pattern = blues_workout_1()
     for track_number, pattern in enumerate(workout_without_tune_in_pattern, 1):
         pattern_notes = make_pattern_notes(scale, pattern, root)
-        messages=make_messages(pattern_notes, TIME_DELTA)
+        messages = make_messages(pattern_notes, TIME_DELTA)
         temp_dirname = os.path.join(
             'output', f'{scale._name}-drill')
         mp3_dirname = os.path.join(
@@ -50,6 +50,7 @@ def make_blues_scale_drills(instrument, root):
             number=track_number,
         )
         update_id3_tags(mp3_filepath, metadata)
+
 
 def make_tune_in_patterns(instrument, root, modes, modes_name):
     for i, s in enumerate(modes):
@@ -83,39 +84,23 @@ def make_tune_in_patterns(instrument, root, modes, modes_name):
         update_id3_tags(mp3_filepath, metadata)
 
 
-def make_drills(instrument, root):
-    scales = {i: make_mode(IONIAN, i, name)
-              for i, name in MODES_OF_MAJOR.items()}
-    for i, s in scales.items():
-        mode_root = note_for_step(IONIAN, root, i)
+def make_drills(
+        instrument: instrument,
+        root: int,
+        scales: Sequence[Scale],
+        exercises: Sequence[Pattern],
+        album_name: str):
+    for i, s in enumerate(scales):
+        mode_root = note_for_step(scales[0], root, i)
         while mode_root < UPRIGHT_BASS_LOWEST:
             mode_root += OCTAVE
-        # tune-in-pattern
-        # pattern_notes = make_pattern_notes(s, TUNE_IN_PATTERN, mode_root)
-        # print(s._name, 'tune-in', pattern_notes)
-        # messages = make_messages(pattern_notes, TIME_DELTA)
-        # dirname = os.path.join('output', TUNE_IN_PATTERN._name)
-        # try:
-        #     os.makedirs(dirname)
-        # except FileExistsError:
-        #     pass
-        # filename = f'{TUNE_IN_PATTERN._name}-{note_name(mode_root)}-{s._name}.mid'
-        # mid_filepath = os.path.join(dirname, filename)
-        # make_file(messages, mid_filepath)
-        # wav_filepath = f'{mid_filepath[:-4]}.wav'
-        # subprocess.Popen(['timidity', mid_filepath, '-Ow', '-o', wav_filepath])
 
-        # other patterns
-        for track_number, p in enumerate(MODE_WORKOUT, 1):
-            # if s._name.lower() != IONIAN._name.lower():
-            #     continue
-            # if p._name != DOWN_TO_ROOT._name:
-            #     continue
-            pattern_notes = make_pattern_notes(s, p, mode_root)
+        for track_number, pattern in enumerate(exercises, 1):
+            pattern_notes = make_pattern_notes(s, pattern, mode_root)
             messages = make_messages(pattern_notes, TIME_DELTA)
-            filename = f'{track_number}-{p._name}-{note_name(mode_root)}-{s._name}-{instrument.name}'
+            filename = f'{track_number}-{pattern._name}-{note_name(mode_root)}-{s._name}-{instrument.name}'
             output_dir = 'output'
-            album_dir = f'{s._name}-{instrument.name}'
+            album_dir = f'{s._name}-{album_name}-{instrument.name}'
             temp_dirname = os.path.join(output_dir, album_dir)
             mp3_dirname = os.path.join(output_dir, 'mp3', album_dir)
             try:
@@ -131,9 +116,9 @@ def make_drills(instrument, root):
                             wav_filepath], capture_output=True, check=True)
             subprocess.run(['ffmpeg', '-y', '-i', wav_filepath,
                             mp3_filepath], capture_output=True, check=True)
-            album_name = f'{s._name.capitalize()} drill in {note_name(mode_root).capitalize()} - {instrument.name}'
+            album_name_id3 = f'{s._name.capitalize()} {album_name} in {note_name(mode_root).capitalize()} - {instrument.name}'
             metadata = TrackMetadata(
-                album=album_name,
+                album=album_name_id3,
                 title=filename,
                 artist=ARTIST_NAME,
                 number=track_number,
@@ -158,12 +143,15 @@ def main():
     piano_root = MIDDLE_C - OCTAVE
 
     # make_drills(bass, bass_root)
-    # make_drills(piano, piano_root)
+    make_drills(piano, piano_root, [ionian], arpeggio_workout(
+        len(ionian)), 'triad-drills')
+    make_drills(piano, piano_root, [aeolian], arpeggio_workout(
+        len(aeolian)), 'triad-drills')
 
     # make_tune_in_patterns(piano, piano_root, modes_of_major, 'modes-of-major')
     # make_tune_in_patterns(piano, piano_root-3,
     #                       modes_of_minor, 'modes-of-minor')
-    make_blues_scale_drills(piano, piano_root)
+    # make_blues_scale_drills(piano, piano_root)
 
 
 if __name__ == '__main__':
