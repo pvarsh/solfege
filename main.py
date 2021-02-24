@@ -6,7 +6,7 @@ import eyed3
 
 from solfege.lib.pattern import *
 from solfege.exercises.scales import BLUES, ionian, aeolian, modes_of_major, modes_of_minor
-from solfege.exercises.exercises import ASCENDING_THIRDS_ASCENDING, DOWN_TO_ROOT, MODE_WORKOUT, TUNE_IN_PATTERN, arpeggio_workout, blues_workout_1, mode_workout
+from solfege.exercises.exercises import ASCENDING_THIRDS_ASCENDING, DOWN_TO_ROOT, TUNE_IN_PATTERN, arpeggio_workout, blues_workout_1, clb_scale_workout, mode_workout
 
 ARTIST_NAME = 'Peter Varshavsky'
 
@@ -143,15 +143,19 @@ def main():
     piano_root = MIDDLE_C - OCTAVE
 
     # make_drills(bass, bass_root)
-    make_drills(piano, piano_root, [ionian], arpeggio_workout(
-        len(ionian)), 'triad-drills')
-    make_drills(piano, piano_root, [aeolian], arpeggio_workout(
-        len(aeolian)), 'triad-drills')
+    # make_drills(piano, piano_root, [ionian], arpeggio_workout(
+    #     len(ionian)), 'triad-drills')
+    # make_drills(piano, piano_root, [aeolian], arpeggio_workout(
+    #     len(aeolian)), 'triad-drills')
 
     # make_tune_in_patterns(piano, piano_root, modes_of_major, 'modes-of-major')
     # make_tune_in_patterns(piano, piano_root-3,
     #                       modes_of_minor, 'modes-of-minor')
+
     # make_blues_scale_drills(piano, piano_root)
+
+    make_drills(piano, piano_root, [ionian], clb_scale_workout, 'clb-scale-drills')
+    make_drills(piano, piano_root, [aeolian], clb_scale_workout, 'clb-scale-drills')
 
 
 if __name__ == '__main__':

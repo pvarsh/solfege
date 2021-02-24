@@ -308,6 +308,18 @@ def ascending_triads_descending(length: int) -> Pattern:
     )
 
 
+def clb_scale_pattern_ascending() -> Pattern:
+    return Pattern(
+        flatten([[s, s + 1, s + 2, s + 3, s + 4, s + 3, s + 2, s] for s in range(7)]) + [7],
+        'ChadLB ascending scale exercise'
+    )
+
+def clb_scale_pattern_descending() -> Pattern:
+    return Pattern(
+        flatten([[s, s + 1, s + 2, s + 3, s+2, s+1, s, s - 2 ] for s in range(7, 0, -1)]) + [0],
+        'ChadLB ascending scale exercise'
+    )
+
 def blues_workout_1() -> list[Pattern]:
     return [
         p(len(BLUES)) for p in [
@@ -325,6 +337,7 @@ def blues_workout_1() -> list[Pattern]:
 
 def mode_workout(mode_length: int) -> list[Pattern]:
     return [
+        [TUNE_IN_PATTERN] + 
         p(mode_length) for p in [
             ascending,
             descending,
@@ -358,21 +371,7 @@ def arpeggio_workout(mode_length: int) -> list[Pattern]:
         ]
     ]
 
-
-MODE_WORKOUT = [
-    TUNE_IN_PATTERN,
-    ASCENDING,
-    DESCENDING,
-    DOWN_TO_ROOT,
-    UP_TO_ROOT,
-    THREE_NOTES_ASCENDING,
-    THREE_NOTES_DESCENDING,
-    THREE_DESCENDING_NOTES_ASCENDING,
-    THREE_ASCENDING_NOTES_DESCENDING,
-    ASCENDING_THIRDS_ASCENDING,
-    DESCENDING_THIRDS_DESCENDING,
-    ASCENDING_TRIADS_ASCENDING,
-    DESCENDING_TRIADS_DESCENDING,
-    DESCENDING_TRIADS_ASCENDING,
-    ASCENDING_TRIADS_DESCENDING,
-]
+clb_scale_workout = [
+        clb_scale_pattern_ascending(),
+        clb_scale_pattern_descending(),
+    ]
